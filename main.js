@@ -155,6 +155,25 @@ window.addEventListener('load', function(){
             for(let i = 0; i < this.game.ammo; i++){
                 context.fillRect(20 + 5 * i, 50, 3, 20);
             }
+            //Game Over Messages
+            if(this.game.gameOver){
+                context.textAlign = 'center';
+                let message1;
+                let message2;
+                //if the player won / lose
+                if(this.game.score > this.game.winningScore){
+                    message1 = 'You Win!';
+                    message2 = 'Well done!';
+                }
+                else{
+                    message1 = 'You lose!';
+                    message2 = 'Try agin next time!';
+                }
+                context.font = '50px ' + this.fontFamily;
+                context.fillText(message1, this.game.width * 0.5, this.game.height * 0.5 - 40);
+                context.font = '25px ' + this.fontFamily;
+                context.fillText(message2, this.game.width * 0.5, this.game.height * 0.5 - 40);
+            }
             context.restore();
         }
     }
