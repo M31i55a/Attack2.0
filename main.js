@@ -8,6 +8,7 @@ window.addEventListener('load', function(){
     class InputHandler{
         constructor(game){
             this.game = game;
+            //keyboard events
             window.addEventListener('keydown', (e) => {
                 if(((e.key === 'ArrowUp') || (e.key === 'ArrowDown') ) && this.game.keys.indexOf(e.key) === -1){
                     this.game.keys.push(e.key);
@@ -63,6 +64,7 @@ window.addEventListener('load', function(){
         }
 
         update(){
+            //the player reacts according to the input(arrowUp for up or arrowDown for down)
             if(this.game.keys.includes('ArrowUp')) this.speedY = -this.maxSpeed;
             else if(this.game.keys.includes('ArrowDown')) this.speedY = this.maxSpeed;
             else this.speedY = 0;
@@ -75,6 +77,7 @@ window.addEventListener('load', function(){
         }
 
         draw(context){
+            //player basic style(a black square)
             context.fillStyle = 'black'
             context.fillRect(this.x, this.y, this.width, this.height);
             this.projectiles.forEach(projectile => {
@@ -82,6 +85,7 @@ window.addEventListener('load', function(){
             })
         }
         shootTop(){
+            //checkout if the player still has bullets and reduce the amount if he uses it
             if(this.game.ammo > 0){
                 this.projectiles.push(new Projectile(this.game, this.x +80, this.y +35));
                 this.game.ammo--;
@@ -107,6 +111,7 @@ window.addEventListener('load', function(){
         draw(context){
             context.fillStyle = 'red';
             context.fillRect(this.x, this.y, this.width, this.height);
+            //Draw enemies lives to check their lives statuses
             context.fillStyle = 'black';
             context.font = '20px Helvetica';
             context.fillText(this.lives, this.x, this.y);
@@ -186,16 +191,18 @@ window.addEventListener('load', function(){
             }
             this.enemies.forEach(enemy => {
                 enemy.update();
+                //set collision to true if they collide
                 if(this.checkCollision(this.player, enemy)){
                     enemy.markedForDeletion = true;
                 }
                 this.player.projectiles.forEach(projectile => {
+                    //reduce enemy life is he collides with the player's projectile
                     if(this.checkCollision(projectile, enemy)){
                         enemy.lives--;
-                        projectile.markedForDeletion = true;
+                        projectile.markedForDeletion = true; 
                         
                         if(enemy.lives <= 0){
-                            enemy.markedForDeletion = true;
+                            enemy.markedForDeletion = true; //delete if the life amount is less or equal to 0
                             this.score += enemy.score;
 
                             if(this.score > this.winningScore) this.gameOver = true;
@@ -226,6 +233,7 @@ window.addEventListener('load', function(){
             console.log(this.enemies)
         }
 
+        //collision detection
         checkCollision(rect1, rect2){
             return(
                 rect1.x < rect2.x + rect2.width && rect1.x + rect1.width > rect2.x
