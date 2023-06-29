@@ -166,6 +166,20 @@ window.addEventListener('load', function(){
         }
     }
 
+    class LuckyFish extends Enemy{
+        constructor(game){
+            super(game);
+            this.width = 99;
+            this.height = 95;
+            this.y = Math.random() * (this.game.height * 0.9 - this.height);
+            this.image = document.getElementById('lucky');
+            this.frameY = Math.floor(Math.random() * 2);
+            this.lives = 3;
+            this.score = 15;
+            this.type = 'lucky';
+        }
+    }
+
     class Layer{
         constructor(game, image, speedModifier){
             this.game = game;
@@ -338,9 +352,10 @@ window.addEventListener('load', function(){
 
         addEnemy(){
             const randomize = Math.random();
-            //The probability to have each type of enemy is 50%
-            if(randomize < 0.5) this.enemies.push(new Angler1(this));
-            else this.enemies.push(new Angler2(this));
+            //The probability to have Angler1 or Angler2 is 30% and for lucky fish, it's 60%
+            if(randomize < 0.3) this.enemies.push(new Angler1(this));
+            else if(randomize < 0.6) this.enemies.push(new Angler2(this));
+            else this.enemies.push(new LuckyFish(this));
             this.enemies.push(new Angler1(this));
             console.log(this.enemies)
         }
