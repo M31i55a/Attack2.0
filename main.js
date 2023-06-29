@@ -37,6 +37,7 @@ window.addEventListener('load', function(){
             this.height = 3;
             this.speed = 3;
             this.markedForDeletion = false;
+            this.image = document.getElementById('projectile');
         }
 
         update(){
@@ -45,8 +46,7 @@ window.addEventListener('load', function(){
         }
 
         draw(context){
-            context.fillStyle = 'yellow';
-            context.fillRect(this.x, this.y, this.width, this.height)
+            context.drawImage(this.image, this.x, this.y);
         }
     }
 
@@ -93,7 +93,7 @@ window.addEventListener('load', function(){
             }
             //power up
             if(this.powerUp){
-                if(this.powerUpTimer > this.powerUpTimer){
+                if(this.powerUpTimer > this.powerUpLimit){
                     this.powerUpTimer = 0;
                     this.powerUp = false;
                     this.frameY = 0;
