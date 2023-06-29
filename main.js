@@ -2,8 +2,8 @@ window.addEventListener('load', function(){
     //canvas setup
     const canvas = document.getElementById('canvas1');
     const ctx = canvas.getContext('2d');
-    canvas.width = 500;
-    canvas.height = 500;
+    canvas.width = 1700;
+    canvas.height =500;
 
     class InputHandler{
         constructor(game){
@@ -356,9 +356,9 @@ window.addEventListener('load', function(){
             this.ammoInterval = 500;
             this.gameOver = false;
             this.score = 0;
-            this.winningScore = 10;
+            this.winningScore = 500;
             this.gameTime = 0;
-            this.timeLimit = 15000;
+            this.timeLimit = 60000;
             this.speed = 1;
             this.debug = true;
         }
@@ -384,12 +384,17 @@ window.addEventListener('load', function(){
                 //set collision to true if they collide
                 if(this.checkCollision(this.player, enemy)){
                     enemy.markedForDeletion = true;
+                    this.score -= enemy.score;
                     for(let i = 0; i < 10; i++){
                         this.particles.push(new Particle(this, enemy.x + enemy.x * 0.5, enemy.y + enemy.y * 0.5));
                     }
-                    if(enemy.type = 'lucky') this.player.enterPowerUp();
-                    else this.score--;
+                    if(enemy.type = 'lucky'){
+                        this.player.enterPowerUp();
+
+                    }
                 }
+                //check if the score is negative
+                if(this.score < 0) this.gameOver = true;
                 this.player.projectiles.forEach(projectile => {
                     //reduce enemy life is he collides with the player's projectile
                     if(this.checkCollision(projectile, enemy)){
@@ -401,6 +406,7 @@ window.addEventListener('load', function(){
                             if(!this.gameOver) this.score += enemy.score;
                             if(this.score > this.winningScore) this.gameOver = true;
                         }
+                        if(enemy.type = 'lucky') this.score -= enemy.score;
                     }
                 })
             })
@@ -429,7 +435,7 @@ window.addEventListener('load', function(){
             const randomize = Math.random();
             //The probability to have Angler1 or Angler2 is 30% and for lucky fish, it's 60%
             if(randomize < 0.3) this.enemies.push(new Angler1(this));
-            else if(randomize < 0.6) this.enemies.push(new Angler2(this));
+            else if(randomize < 0.4) this.enemies.push(new Angler2(this));
             else this.enemies.push(new LuckyFish(this));
             this.enemies.push(new Angler1(this));
             console.log(this.enemies)
