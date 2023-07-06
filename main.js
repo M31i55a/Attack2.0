@@ -3,7 +3,7 @@ window.addEventListener('load', function(){
     const canvas = document.getElementById('canvas1');
     const ctx = canvas.getContext('2d');
     canvas.width = 1700;
-    canvas.height =500;
+    canvas.height = 700;
 
     class InputHandler{
         constructor(game){
@@ -68,7 +68,7 @@ window.addEventListener('load', function(){
             this.angle = 0;
             this.va = Math.random() * 0.2 - 0.1;
             this.bounced = 0;
-            this.bottomBounceBoundary = Math.random() * 100 + 60;
+            this.bottomBounceBoundary = Math.random() * 80 + 60;
         }
 
         update(){
@@ -85,7 +85,11 @@ window.addEventListener('load', function(){
         }
 
         draw(context){
-            context.drawImage(this.image, this.frameX * this.spriteSize, this.frameY * this.spriteSize, this.spriteSize, this.spriteSize, this.x, this.y, this.size, this.size);
+            context.save()
+            context.translate(this.x, this.y)
+            context.rotate(this.angle)
+            context.drawImage(this.image, this.frameX * this.spriteSize, this.frameY * this.spriteSize, this.spriteSize, this.spriteSize, this.spriteSize * 0.5, this.spriteSize * 0.5, this.size, this.size);
+            context.restore()
         }
     }
 
@@ -167,7 +171,7 @@ window.addEventListener('load', function(){
         enterPowerUp(){
             this.powerUpTimer = 0;
             this.powerUp = true;
-            this.game.ammo = this.game.maxAmmo;
+            if(this.game.ammo < this.game.maxAmmo) this.game.ammo = this.game.maxAmmo;
         }
     }
 
@@ -250,8 +254,8 @@ window.addEventListener('load', function(){
             this.game = game;
             this.image = image;
             this.speedModifier = speedModifier;
-            this.width = 1768;
-            this.height = 500;
+            this.width = 2472;
+            this.height = 700;
             this.x = 0;
             this.y = 0;
         }
@@ -327,6 +331,7 @@ window.addEventListener('load', function(){
                 context.fillText(message1, this.game.width * 0.5, this.game.height * 0.5 - 20);
                 context.font = '25px ' + this.fontFamily;
                 context.fillText(message2, this.game.width * 0.5, this.game.height * 0.5 + 20);
+                // game.enemies.noLoop()
             }
             //ammo
             if(this.game.player.powerUp) context.fillStyle = '#ffffbd';
@@ -358,9 +363,9 @@ window.addEventListener('load', function(){
             this.score = 0;
             this.winningScore = 500;
             this.gameTime = 0;
-            this.timeLimit = 60000;
+            this.timeLimit = 80000;
             this.speed = 1;
-            this.debug = true;
+            this.debug = false;
         }
 
         update(deltaTime){
@@ -382,15 +387,19 @@ window.addEventListener('load', function(){
             this.enemies.forEach(enemy => {
                 enemy.update();
                 //set collision to true if they collide
-                if(this.checkCollision(this.player, enemy)){
-                    enemy.markedForDeletion = true;
-                    this.score -= enemy.score;
-                    for(let i = 0; i < 10; i++){
-                        this.particles.push(new Particle(this, enemy.x + enemy.x * 0.5, enemy.y + enemy.y * 0.5));
-                    }
-                    if(enemy.type = 'lucky'){
-                        this.player.enterPowerUp();
+                if(!this.gameOver){
 
+                    if(this.checkCollision(this.player, enemy)){
+                        enemy.markedForDeletion = true;
+                        this.score -= enemy.score;
+                        for(let i = 0; i < 10; i++){
+                            this.particles.push(new Particle(this, enemy.x + enemy.x * 0.5, enemy.y + enemy.y * 0.5));
+                        }
+                        if(enemy.type === 'lucky'){
+                            this.player.enterPowerUp();
+    
+                        }
+                        else this.score--;
                     }
                 }
                 //check if the score is negative
@@ -400,13 +409,13 @@ window.addEventListener('load', function(){
                     if(this.checkCollision(projectile, enemy)){
                         enemy.lives--;
                         projectile.markedForDeletion = true; 
-                        this.particles.push(new Particle(this, enemy.x + enemy.x * 0.5, enemy.y + enemy.y * 0.5));
+                        this.particles.push(new Particle(this, enemy.x, enemy.y));
                         if(enemy.lives <= 0){
                             enemy.markedForDeletion = true; //delete if the life amount is less or equal to 0
                             if(!this.gameOver) this.score += enemy.score;
                             if(this.score > this.winningScore) this.gameOver = true;
                         }
-                        if(enemy.type = 'lucky') this.score -= enemy.score;
+                        
                     }
                 })
             })
@@ -422,8 +431,8 @@ window.addEventListener('load', function(){
 
         draw(context){
             this.background.draw(context);
-            this.player.draw(context);
             this.ui.draw(context);
+            this.player.draw(context);
             this.particles.forEach(particle => particle.draw(context));
             this.enemies.forEach(enemy => {
                 enemy.draw(context);
