@@ -96,6 +96,7 @@ window.addEventListener('load', function(){
     class Player{
         constructor(game){
             this.game = game;
+            this.counter = 0;
             this.width = 120;
             this.height = 190; 
             this.x = 20;
@@ -172,6 +173,57 @@ window.addEventListener('load', function(){
             this.powerUpTimer = 0;
             this.powerUp = true;
             if(this.game.ammo < this.game.maxAmmo) this.game.ammo = this.game.maxAmmo;
+        }
+        callBackUp(){
+            
+        }
+    }
+
+    class Dragon{
+        constructor(game, x, y){
+            this.game = game;
+            this.markedForDeletion = false;
+            this.x = x;
+            this.y = y;
+            this.width = 500/3;
+            this.height = 155;
+            this.frameX = 0;
+            this.frameY = 0;
+            this.maxFrame = 5;
+            this.frameTimer = 0;
+            this.switchInterval = 10;
+            this.speedX = 2;
+            this.lives = 50;
+            this.image = new Image()
+        }
+    
+        update(deltaTime){
+            this.image.src = 'assets/dragonSprite.png';
+            this.x += this.speedX;
+            if(this.x > this.game.width) this.markedForDeletion = true;
+            if(this.frameTimer > this.switchInterval){
+                if(this.frameY < 2){
+                    if(this.frameX < this.maxFrame){
+                        this.frameX++;
+                    }
+                    else{
+                        this.frameX = 0;
+                        this.frameY++;
+                    }
+                }
+                if(this.frameY == 2){
+                    this.frameY = 0;
+                }
+                this.frameTimer = 0;
+            }
+            else{
+                this.frameTimer += deltaTime;
+            }
+        }
+        
+        draw(){
+            ctx.drawImage(this.image, this.frameX * this.width, this.frameY * this.height, this.width, this.height, this.x, this.y, this.width, this.height)
+    
         }
     }
 
@@ -428,6 +480,7 @@ window.addEventListener('load', function(){
             this.player = new Player(this);
             this.input = new InputHandler(this);
             this.ui = new UI(this);
+            this.dragons = [];
             this.keys = [];
             this.enemies = [];
             this.particles = [];
@@ -442,7 +495,7 @@ window.addEventListener('load', function(){
             this.score = 0;
             this.winningScore = 500;
             this.gameTime = 0;
-            this.timeLimit = 80000;
+            this.timeLimit = 100000;
             this.speed = 1;
             this.debug = false;
         }
@@ -450,10 +503,9 @@ window.addEventListener('load', function(){
         update(deltaTime){
             if(!this.gameOver) this.gameTime += deltaTime;
             if(this.gameTime > this.timeLimit) this.gameOver = true;
-            this.background.update();
+            this.background.update();  
             this.background.layer4.update();
             this.player.update(deltaTime);
-
             if(this.ammoTimer > this.ammoInterval){
                 if(this.ammo < this.maxAmmo) this.ammo++;
                 this.ammoTimer = 0;
@@ -467,12 +519,14 @@ window.addEventListener('load', function(){
             //appearance and disappearance of explosions
             this.explosions.forEach(explosion => explosion.update(deltaTime));
             this.explosions = this.explosions.filter(explosion => !explosion.markedForDeletion);
+            //dragon pops up
+            this.dragons.forEach(dragon => dragon.update(deltaTime));
+            this.dragons = this.dragons.filter(dragon => !dragon.markedForDeletion);
 
             this.enemies.forEach(enemy => {
                 enemy.update();
-                //set collision to true if they collide
                 if(!this.gameOver){
-
+                    //set collision to true if they collide(player and enemy)
                     if(this.checkCollision(this.player, enemy)){
                         enemy.markedForDeletion = true;
                         this.addExplosion(enemy)
@@ -482,11 +536,27 @@ window.addEventListener('load', function(){
                         }
                         if(enemy.type === 'lucky'){
                             this.player.enterPowerUp();
-    
+                            this.player.counter++;
+                            if(this.player.counter == 3){
+                                this.addDragon()
+                            }
                         }
-                        else this.score--;
+                        else{
+                            this.score--;
+                            this.player.counter--;
+                            if(this.player.counter < 0 || this.player.counter > 3) this.player.counter = 0;
+                        } 
+                        console.log(this.player.counter)
                     }
                 }
+                this.dragons.forEach(dragon => {
+                    if(this.checkCollision(enemy, dragon)){
+                        this.addExplosion(enemy);
+                        enemy.markedForDeletion = true;
+                        this.score += enemy.score;
+                    }
+                })
+                
                 //check if the score is negative
                 if(this.score < 0) this.gameOver = true;
                 this.player.projectiles.forEach(projectile => {
@@ -527,9 +597,8 @@ window.addEventListener('load', function(){
             this.ui.draw(context);
             this.player.draw(context);
             this.particles.forEach(particle => particle.draw(context));
-            this.enemies.forEach(enemy => {
-                enemy.draw(context);
-            })
+            this.dragons.forEach(dragon => dragon.draw(context))
+            this.enemies.forEach(enemy => enemy.draw(context))
             this.explosions.forEach(explosion => explosion.draw(context));
             this.background.layer4.draw(context);
         }
@@ -554,6 +623,10 @@ window.addEventListener('load', function(){
                 this.explosions.push(new FireExplosion(this, enemy.x + enemy.width * 0.5, enemy.y + enemy.height * 0.5))
             }
         }
+
+        addDragon(){
+            this.dragons.push(new Dragon(this, 100, 100))
+        }  
 
         //collision detection
         checkCollision(rect1, rect2){
