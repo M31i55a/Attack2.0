@@ -96,6 +96,7 @@ window.addEventListener('load', function(){
     class Player{
         constructor(game){
             this.game = game;
+            this.lives = 100;
             this.counter = 0;
             this.width = 120;
             this.height = 190; 
@@ -109,6 +110,7 @@ window.addEventListener('load', function(){
             this.projectiles = [];
             this.image = document.getElementById('player');
             this.powerUp = false;
+            this.touched = false;
             this.powerUpTimer = 0;
             this.powerUpLimit = 10000;
         }
@@ -192,8 +194,8 @@ window.addEventListener('load', function(){
             this.maxFrame = 5;
             this.frameTimer = 0;
             this.switchInterval = 10;
-            this.speedX = 2;
-            this.lives = 50;
+            this.speedX = 2.3;
+            this.lives = 40;
             this.image = new Image()
         }
     
@@ -252,10 +254,12 @@ window.addEventListener('load', function(){
         }
 
         draw(context){
+            context.strokeStyle = 'white'
             if(this.game.debug) context.strokeRect(this.x, this.y, this.width, this.height);
             context.drawImage(this.image, this.frameX * this.width, this.frameY * this.height, this.width, this.height, this.x, this.y, this.width, this.height);
             if(this.game.debug){
                 context.font = '20px Bangers';
+                context.fillStyle = 'white'
                 context.fillText(this.lives, this.x, this.y);
             }
         }
@@ -442,11 +446,13 @@ window.addEventListener('load', function(){
             context.font = this.fontSize + 'px ' + this.fontFamily;
             //score 
             context.fillText('Score : ' + this.game.score, 20, 40);
+            //lives
+            context.fillText('Lives : ' + this.game.player.lives, 150, 40);
             //Timer
             const formattedTime = (this.game.gameTime * 0.001).toFixed(1);//Scientific Notation
             context.fillText('Timer : ' + formattedTime, 20, 100);
             //display coins
-            context.fillText('Coins : ' + game.player.counter, 150, 100)
+            context.fillText('Coins : ' + this.game.player.counter, 150, 100)
             //Game Over Messages
             if(this.game.gameOver){
                 context.textAlign = 'center';
@@ -454,7 +460,7 @@ window.addEventListener('load', function(){
                 let message2;
                 //if the player won / lose
                 if(this.game.score > this.game.winningScore){
-                    message1 = 'You Win!';
+                    message1 = 'Congratulations !!!!';
                     message2 = 'Well done!';
                 }
                 else{
@@ -506,10 +512,15 @@ window.addEventListener('load', function(){
 
         update(deltaTime){
             if(!this.gameOver) this.gameTime += deltaTime;
-            if(this.gameTime > this.timeLimit) this.gameOver = true;
+            if(this.gameTime > this.timeLimit || this.score >= 500) this.gameOver = true;
             this.background.update();  
             this.background.layer5.update();
             this.player.update(deltaTime);
+            //game over if the player life is 0
+            if(this.player.lives <= 0){
+                this.player.lives = 0;
+                this.gameOver = true;
+            }
             if(this.ammoTimer > this.ammoInterval){
                 if(this.ammo < this.maxAmmo) this.ammo++;
                 this.ammoTimer = 0;
@@ -530,9 +541,17 @@ window.addEventListener('load', function(){
             this.enemies.forEach(enemy => {
                 enemy.update();
                 if(!this.gameOver){
-                    //set collision to true if they collide(player and enemy)
+                    //set collision to true if they collide(player and enemy) *************************************************
                     if(this.checkCollision(this.player, enemy)){
+                        if(enemy.type === 'lucky'){
+                            this.player.touched = false
+                        }
+                        else{
+                            this.player.touched = true
+                        }
+                        console.log(this.player.touched)
                         enemy.markedForDeletion = true;
+                        this.player.lives -= enemy.lives;
                         this.addExplosion(enemy)
                         this.score -= enemy.score;
                         for(let i = 0; i < enemy.score; i++){
@@ -541,7 +560,7 @@ window.addEventListener('load', function(){
                         if(enemy.type === 'lucky'){
                             this.player.enterPowerUp();
                             this.player.counter++;
-                            if(this.player.counter == 4){
+                            if(this.player.counter > 3){
                                 this.addDragon();
                                 this.player.counter = 0;
                             }
@@ -551,13 +570,22 @@ window.addEventListener('load', function(){
                             this.player.counter--;
                             if(this.player.counter < 0) this.player.counter = 0;
                         } 
+                        
                     }
+                    // console.log(this.player.touched)
                 }
                 this.dragons.forEach(dragon => {
                     if(this.checkCollision(enemy, dragon)){
-                        this.addExplosion(enemy);
-                        enemy.markedForDeletion = true;
-                        this.score += enemy.score;
+                        if(enemy.type !== 'lucky'){
+                            this.addExplosion(enemy);
+                            enemy.markedForDeletion = true;
+                            this.score += enemy.score;
+                            dragon.lives -= enemy.lives;
+                            if(dragon.lives <= 0){
+                                this.addExplosion(dragon);
+                                dragon.markedForDeletion = true;
+                            }
+                        }
                     }
                 })
                 
@@ -580,7 +608,6 @@ window.addEventListener('load', function(){
                                 }
                             }
                             if(!this.gameOver) this.score += enemy.score;
-                            if(this.score > this.winningScore) this.gameOver = true;
                         }
                         
                     }
