@@ -108,9 +108,11 @@ window.addEventListener('load', function(){
             this.speedY = 0;
             this.maxSpeed = 2;
             this.projectiles = [];
-            this.image = document.getElementById('player');
+            this.image = this.image = document.getElementById('player');
             this.powerUp = false;
             this.touched = false;
+            this.touchedTimer = 0;
+            this.touchedLimit = 2000;
             this.powerUpTimer = 0;
             this.powerUpLimit = 10000;
         }
@@ -138,6 +140,7 @@ window.addEventListener('load', function(){
             }
             //power up
             if(this.powerUp){
+                this.image = document.getElementById('player');
                 if(this.powerUpTimer > this.powerUpLimit){
                     this.powerUpTimer = 0;
                     this.powerUp = false;
@@ -147,6 +150,19 @@ window.addEventListener('load', function(){
                     this.powerUpTimer += deltaTime;
                     this.frameY = 1;
                     this.game.ammo += 0.1;
+                }
+            }
+            //touched by an enemy
+            if(this.touched){
+                if(this.touchedTimer > this.touchedLimit){
+                    this.image = document.getElementById('player');
+                    this.touchedTimer = 0;
+                    this.touched = false;
+                }
+                else{
+                    this.image = document.getElementById('playerTouched');
+                    this.touchedTimer += deltaTime;
+                    this.frameY = 0;
                 }
             }
         }
@@ -459,7 +475,7 @@ window.addEventListener('load', function(){
                 let message1;
                 let message2;
                 //if the player won / lose
-                if(this.game.score > this.game.winningScore){
+                if(this.game.score >= this.game.winningScore){
                     message1 = 'Congratulations !!!!';
                     message2 = 'Well done!';
                 }
@@ -505,7 +521,7 @@ window.addEventListener('load', function(){
             this.score = 0;
             this.winningScore = 500;
             this.gameTime = 0;
-            this.timeLimit = 100000;
+            this.timeLimit = 120000;
             this.speed = 1;
             this.debug = false;
         }
@@ -549,7 +565,6 @@ window.addEventListener('load', function(){
                         else{
                             this.player.touched = true
                         }
-                        console.log(this.player.touched)
                         enemy.markedForDeletion = true;
                         this.player.lives -= enemy.lives;
                         this.addExplosion(enemy)
@@ -560,7 +575,7 @@ window.addEventListener('load', function(){
                         if(enemy.type === 'lucky'){
                             this.player.enterPowerUp();
                             this.player.dragonTrigger++;
-                            if(this.player.dragonTrigger > 3){
+                            if(this.player.dragonTrigger == 3){
                                 this.addDragon();
                                 this.player.dragonTrigger = 0;
                             }
@@ -572,7 +587,6 @@ window.addEventListener('load', function(){
                         } 
                         
                     }
-                    // console.log(this.player.touched)
                 }
                 this.dragons.forEach(dragon => {
                     if(this.checkCollision(enemy, dragon)){
