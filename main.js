@@ -97,7 +97,7 @@ window.addEventListener('load', function(){
         constructor(game){
             this.game = game;
             this.lives = 100;
-            this.counter = 0;
+            this.dragonTrigger = 0;
             this.width = 120;
             this.height = 190; 
             this.x = 20;
@@ -452,7 +452,7 @@ window.addEventListener('load', function(){
             const formattedTime = (this.game.gameTime * 0.001).toFixed(1);//Scientific Notation
             context.fillText('Timer : ' + formattedTime, 20, 100);
             //display coins
-            context.fillText('Coins : ' + this.game.player.counter, 150, 100)
+            context.fillText('Coins : ' + this.game.player.dragonTrigger, 150, 100)
             //Game Over Messages
             if(this.game.gameOver){
                 context.textAlign = 'center';
@@ -559,16 +559,16 @@ window.addEventListener('load', function(){
                         }
                         if(enemy.type === 'lucky'){
                             this.player.enterPowerUp();
-                            this.player.counter++;
-                            if(this.player.counter > 3){
+                            this.player.dragonTrigger++;
+                            if(this.player.dragonTrigger > 3){
                                 this.addDragon();
-                                this.player.counter = 0;
+                                this.player.dragonTrigger = 0;
                             }
                         }
                         else{
                             this.score--;
-                            this.player.counter--;
-                            if(this.player.counter < 0) this.player.counter = 0;
+                            this.player.dragonTrigger--;
+                            if(this.player.dragonTrigger < 0) this.player.dragonTrigger = 0;
                         } 
                         
                     }
