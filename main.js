@@ -282,7 +282,7 @@ window.addEventListener('load', function(){
             this.y = Math.random() * (this.game.height * 0.95 - this.height);
             this.image = document.getElementById('angler2');
             this.frameY = Math.floor(Math.random() * 2);
-            this.lives = 3;
+            this.lives = 5;
             this.score = this.lives;
         }
     }
@@ -361,11 +361,13 @@ window.addEventListener('load', function(){
             this.image2 = document.getElementById('layer2');
             this.image3 = document.getElementById('layer3');
             this.image4 = document.getElementById('layer4');
-            this.layer1 = new Layer(this.game, this.image1, 0.2);
+            this.image5 = document.getElementById('layer5');
+            this.layer1 = new Layer(this.game, this.image1, 0.17);
             this.layer2 = new Layer(this.game, this.image2, 0.4);
-            this.layer3 = new Layer(this.game, this.image3, 1);
-            this.layer4 = new Layer(this.game, this.image4, 1.5);
-            this.layers = [this.layer1, this.layer2, this.layer3];
+            this.layer3 = new Layer(this.game, this.image3, 0.7);
+            this.layer4 = new Layer(this.game, this.image4, 1);
+            this.layer5 = new Layer(this.game, this.image5, 1.5);
+            this.layers = [this.layer1, this.layer2, this.layer3, this.layer4];
         }
 
         update(){
@@ -427,7 +429,7 @@ window.addEventListener('load', function(){
     class UI{
         constructor(game){
             this.game = game;
-            this.fontSize = 25;
+            this.fontSize = 21;
             this.fontFamily = 'bangers';
             this.color = 'white';
         }
@@ -437,12 +439,14 @@ window.addEventListener('load', function(){
             context.shadowOffsetX = 2;
             context.shadowOffsetY = 2;
             context.shadowColor = 'black';
-            context.font = this.fontSize + 'px' + this.fontFamily;
+            context.font = this.fontSize + 'px ' + this.fontFamily;
             //score 
             context.fillText('Score : ' + this.game.score, 20, 40);
             //Timer
             const formattedTime = (this.game.gameTime * 0.001).toFixed(1);//Scientific Notation
             context.fillText('Timer : ' + formattedTime, 20, 100);
+            //display coins
+            context.fillText('Coins : ' + game.player.counter, 150, 100)
             //Game Over Messages
             if(this.game.gameOver){
                 context.textAlign = 'center';
@@ -504,7 +508,7 @@ window.addEventListener('load', function(){
             if(!this.gameOver) this.gameTime += deltaTime;
             if(this.gameTime > this.timeLimit) this.gameOver = true;
             this.background.update();  
-            this.background.layer4.update();
+            this.background.layer5.update();
             this.player.update(deltaTime);
             if(this.ammoTimer > this.ammoInterval){
                 if(this.ammo < this.maxAmmo) this.ammo++;
@@ -537,16 +541,16 @@ window.addEventListener('load', function(){
                         if(enemy.type === 'lucky'){
                             this.player.enterPowerUp();
                             this.player.counter++;
-                            if(this.player.counter == 3){
-                                this.addDragon()
+                            if(this.player.counter == 4){
+                                this.addDragon();
+                                this.player.counter = 0;
                             }
                         }
                         else{
                             this.score--;
                             this.player.counter--;
-                            if(this.player.counter < 0 || this.player.counter > 3) this.player.counter = 0;
+                            if(this.player.counter < 0) this.player.counter = 0;
                         } 
-                        console.log(this.player.counter)
                     }
                 }
                 this.dragons.forEach(dragon => {
@@ -600,7 +604,7 @@ window.addEventListener('load', function(){
             this.dragons.forEach(dragon => dragon.draw(context))
             this.enemies.forEach(enemy => enemy.draw(context))
             this.explosions.forEach(explosion => explosion.draw(context));
-            this.background.layer4.draw(context);
+            this.background.layer5.draw(context);
         }
 
         addEnemy(){
@@ -625,7 +629,7 @@ window.addEventListener('load', function(){
         }
 
         addDragon(){
-            this.dragons.push(new Dragon(this, 100, 100))
+            this.dragons.push(new Dragon(this, this.player.x, this.player.y))
         }  
 
         //collision detection

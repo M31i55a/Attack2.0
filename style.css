@@ -4,6 +4,10 @@
     box-sizing: border-box;
 }
 
+body{
+    background: #000;
+}
+
 #canvas1{
     font-family: 'Open Sans', sans-serif;
     border: 3px solid black;
@@ -16,6 +20,6 @@
     max-height: 100%;
 }
 
-#layer1, #layer2, #layer3, #layer4, #player, #angler1, #angler2, #lucky, #projectile, #gears, #hivewhale, #drone, #smokeExplosion, #fireExplosion, #dragonSprite{
+#layer1, #layer2, #layer3, #layer4, #layer5, #player, #angler1, #angler2, #lucky, #projectile, #gears, #hivewhale, #drone, #smokeExplosion, #fireExplosion, #dragonSprite{
     display: none;
 }
