@@ -249,7 +249,7 @@ window.addEventListener('load', function(){
         constructor(game){
             this.game = game;
             this.x = this.game.width;
-            this.speedX = Math.random() * -1.5 - 0.5;
+            this.speedX = Math.random() * -2.3 - 0.95;
             this.markedForDeletion = false;
             this.frameX = 0;
             this.frameY = 0;
@@ -332,7 +332,7 @@ window.addEventListener('load', function(){
             this.lives = 20;
             this.score = this.lives;
             this.type = 'hive';
-            this.speedX = Math.random() * -1.2 - 0.2;
+            this.speedX = Math.random() * -1.5 - 0.55;
         }
     }
 
@@ -348,7 +348,7 @@ window.addEventListener('load', function(){
             this.lives = 3;
             this.score = this.lives;
             this.type = 'drone';
-            this.speedX = Math.random() * -4.3 - 0.7;
+            this.speedX = Math.random() * -4.3 - 1.7;
         }
     }
 
@@ -519,7 +519,7 @@ window.addEventListener('load', function(){
             this.ammoInterval = 500;
             this.gameOver = false;
             this.score = 0;
-            this.winningScore = 500;
+            this.winningScore = 700;
             this.gameTime = 0;
             this.timeLimit = 120000;
             this.speed = 1;
@@ -528,7 +528,7 @@ window.addEventListener('load', function(){
 
         update(deltaTime){
             if(!this.gameOver) this.gameTime += deltaTime;
-            if(this.gameTime > this.timeLimit || this.score >= 500) this.gameOver = true;
+            if(this.gameTime > this.timeLimit || this.score >= this.winningScore) this.gameOver = true;
             this.background.update();  
             this.background.layer5.update();
             this.player.update(deltaTime);
@@ -651,9 +651,9 @@ window.addEventListener('load', function(){
         addEnemy(){
             const randomize = Math.random();
             //setting up the appearing probabilities
-            if(randomize < 0.3) this.enemies.push(new Angler1(this));
-            else if(randomize < 0.6) this.enemies.push(new Angler2(this));
-            else if(randomize < 0.7) this.enemies.push(new HiveWhale(this));
+            if(randomize < 0.2) this.enemies.push(new Angler1(this));
+            else if(randomize < 0.4) this.enemies.push(new Angler2(this));
+            else if(randomize < 0.65) this.enemies.push(new HiveWhale(this));
             else this.enemies.push(new LuckyFish(this));                                           
             this.enemies.push(new Angler1(this));
             
