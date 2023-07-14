@@ -20,6 +20,6 @@ body{
     max-height: 100%;
 }
 
-#layer1, #layer2, #layer3, #layer4, #layer5, #player,#playerTouched, #angler1, #angler2, #lucky, #projectile, #gears, #hivewhale, #drone, #smokeExplosion, #fireExplosion, #dragonSprite{
+#layer1, #layer2, #layer3, #layer4, #layer5, #player,#backUpImg, #playerTouched, #angler1, #angler2, #lucky, #projectile, #gears, #hivewhale, #drone, #smokeExplosion, #fireExplosion, #dragonSprite{
     display: none;
 }

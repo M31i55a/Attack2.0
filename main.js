@@ -108,11 +108,21 @@ window.addEventListener('load', function(){
             this.speedY = 0;
             this.maxSpeed = 2;
             this.projectiles = [];
-            this.image = this.image = document.getElementById('player');
+            this.image = document.getElementById('player');
+            this.backUpImg = document.getElementById('backUpImg');
             this.powerUp = false;
             this.touched = false;
+            this.backUp = false;
+            this.backUpWidth = 5834/4;
+            this.backUpHeight = 3209/2;
+            this.backUpCounter = 0;
             this.touchedTimer = 0;
             this.touchedLimit = 2000;
+            this.backUpTimer = 0;
+            this.backUpLimit = 7000;
+            this.backUpFrameX = 0;
+            this.backUpFrameY = 0;
+            this.backUpMaxFrame = 4;
             this.powerUpTimer = 0;
             this.powerUpLimit = 10000;
         }
@@ -152,6 +162,31 @@ window.addEventListener('load', function(){
                     this.game.ammo += 0.1;
                 }
             }
+            //backup
+            if(this.backUp){
+                if(this.backUpTimer > this.backUpLimit){
+
+                    if(this.backUpFrameY < 2){
+                        if(this.backUpFrameX < this.backUpMaxFrame){
+                            this.backUpFrameX++;
+                        }
+                        else{
+                            this.backUpFrameX = 0;
+                            this.backUpFrameY++;
+                        }
+                    }
+                    if(this.backUpFrameY == 2){
+                        this.backUpFrameY = 0;
+                    }
+
+                    this.backUpTimer = 0;
+                    this.backUp = false;
+                }
+                else{
+                    this.backUpTimer += deltaTime;
+                    this.touched = false;
+                }
+            }
             //touched by an enemy
             if(this.touched){
                 if(this.touchedTimer > this.touchedLimit){
@@ -172,7 +207,10 @@ window.addEventListener('load', function(){
                 projectile.draw(context);
             })
             if(this.game.debug) context.strokeRect(this.x, this.y, this.width, this.height);
-            context.drawImage(this.image,this.frameX * this.width, this.frameY * this.height, this.width, this.height,  this.x, this.y, this.width, this.height);
+            context.drawImage(this.image,this.frameX * this.width, this.frameY * this.height, this.width, this.height,  this.x, this.y, this.width-25, this.height-25);
+            if(this.backUp){
+                context.drawImage(this.backUpImg, 0 * this.backUpWidth, 0 * this.backUpHeight, this.backUpWidth, this.backUpHeight,  this.x - 120, this.y - 100, this.width*3 - 50, this.height*2 -50)
+            }
         }
         shootTop(){
             //checkout if the player still has bullets and reduce the amount if he uses it
@@ -193,7 +231,9 @@ window.addEventListener('load', function(){
             if(this.game.ammo < this.game.maxAmmo) this.game.ammo = this.game.maxAmmo;
         }
         callBackUp(){
-            
+            this.backUpTimer = 0;
+            this.backUp = true;
+            this.touched = false;
         }
     }
 
@@ -272,7 +312,7 @@ window.addEventListener('load', function(){
         draw(context){
             context.strokeStyle = 'white'
             if(this.game.debug) context.strokeRect(this.x, this.y, this.width, this.height);
-            context.drawImage(this.image, this.frameX * this.width, this.frameY * this.height, this.width, this.height, this.x, this.y, this.width, this.height);
+            context.drawImage(this.image, this.frameX * this.width, this.frameY * this.height, this.width, this.height, this.x, this.y, this.width-20, this.height-20);
             if(this.game.debug){
                 context.font = '20px Bangers';
                 context.fillStyle = 'white'
@@ -463,7 +503,9 @@ window.addEventListener('load', function(){
             //score 
             context.fillText('Score : ' + this.game.score, 20, 40);
             //lives
-            context.fillText('Lives : ' + this.game.player.lives, 150, 40);
+            context.fillText('Lives : ' + this.game.player.lives, 140, 40);
+            //display protect status
+            context.fillText('Protections : ' + this.game.player.backUpCounter, 260, 40)
             //Timer
             const formattedTime = (this.game.gameTime * 0.001).toFixed(1);//Scientific Notation
             context.fillText('Timer : ' + formattedTime, 20, 100);
@@ -519,7 +561,7 @@ window.addEventListener('load', function(){
             this.ammoInterval = 500;
             this.gameOver = false;
             this.score = 0;
-            this.winningScore = 700;
+            this.winningScore = 1000;
             this.gameTime = 0;
             this.timeLimit = 120000;
             this.speed = 1;
@@ -559,28 +601,30 @@ window.addEventListener('load', function(){
                 if(!this.gameOver){
                     //set collision to true if they collide(player and enemy) *************************************************
                     if(this.checkCollision(this.player, enemy)){
-                        if(enemy.type === 'lucky'){
-                            this.player.touched = false
-                        }
-                        else{
-                            this.player.touched = true
-                        }
                         enemy.markedForDeletion = true;
-                        this.player.lives -= enemy.lives;
+                        if(this.player.backUpCounter == 5){
+                            this.player.backUpCounter = 0;
+                            this.player.backUp = true;
+                        }
+                        if(!this.player.backUp) this.player.lives -= enemy.lives;
+                        if(this.player.backUp) this.player.touched = false;
                         this.addExplosion(enemy)
                         this.score -= enemy.score;
                         for(let i = 0; i < enemy.score; i++){
                             this.particles.push(new Particle(this, enemy.x + enemy.x * 0.5, enemy.y + enemy.y * 0.5));
                         }
                         if(enemy.type === 'lucky'){
+                            this.player.backUpCounter++;
                             this.player.enterPowerUp();
                             this.player.dragonTrigger++;
                             if(this.player.dragonTrigger == 3){
+                                this.player.touched = false
                                 this.addDragon();
                                 this.player.dragonTrigger = 0;
                             }
                         }
                         else{
+                            this.player.touched = true
                             this.score--;
                             this.player.dragonTrigger--;
                             if(this.player.dragonTrigger < 0) this.player.dragonTrigger = 0;
