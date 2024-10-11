@@ -35,7 +35,7 @@ window.addEventListener('load', function(){
             this.y = y;
             this.width = 10;
             this.height = 3;
-            this.speed = 3;
+            this.speed = 4.5;
             this.markedForDeletion = false;
             this.image = document.getElementById('projectile');
         }
