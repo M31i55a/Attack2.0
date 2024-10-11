@@ -250,7 +250,7 @@ window.addEventListener('load', function(){
             this.maxFrame = 5;
             this.frameTimer = 0;
             this.switchInterval = 10;
-            this.speedX = 2.3;
+            this.speedX = 4;
             this.lives = 40;
             this.image = new Image()
         }
