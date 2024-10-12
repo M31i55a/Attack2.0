@@ -558,7 +558,7 @@ window.addEventListener('load', function(){
             this.ammo = 20;
             this.maxAmmo = 50;
             this.ammoTimer = 0;
-            this.ammoInterval = 500;
+            this.ammoInterval = 400;
             this.gameOver = false;
             this.score = 0;
             this.winningScore = 1000;
