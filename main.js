@@ -4,6 +4,8 @@ window.addEventListener('load', function(){
     const ctx = canvas.getContext('2d');
     canvas.width = 1700;
     canvas.height = 700;
+    const up = document.getElementById("up");
+    const down = document.getElementById("down");
 
     class InputHandler{
         constructor(game){
@@ -24,6 +26,55 @@ window.addEventListener('load', function(){
                 if(this.game.keys.indexOf(e.key) > -1){
                     this.game.keys.splice(this.game.keys.indexOf(e.key), 1)
                 }
+            })
+
+            //For mobile
+            up.addEventListener("mousedown", (e) => {
+                //Create and dispatch an ArrowUp keydown event
+                const arrowUpEvent = new KeyboardEvent('keydown', {
+                    key : 'ArrowUp',
+                    keyCode : 38,
+                    code : 'ArrowUp',
+                    bubbles : true
+                })
+
+                window.dispatchEvent(arrowUpEvent)
+            })
+
+            up.addEventListener("mouseup", (e) => {
+                //Create and dispatch an ArrowUp keydown event
+                const arrowUpEvent = new KeyboardEvent('keyup', {
+                    key : 'ArrowUp',
+                    keyCode : 38,
+                    code : 'ArrowUp',
+                    bubbles : true
+                })
+
+                window.dispatchEvent(arrowUpEvent)
+            })
+
+            down.addEventListener("mousedown", (e) => {
+                //Create and dispatch an ArrowUp keydown event
+                const arrowDownEvent = new KeyboardEvent('keydown', {
+                    key : 'ArrowDown',
+                    keyCode : 38,
+                    code : 'ArrowDown',
+                    bubbles : true
+                })
+
+                window.dispatchEvent(arrowDownEvent)
+            })
+
+            down.addEventListener("mouseup", (e) => {
+                //Create and dispatch an ArrowUp keydown event
+                const arrowUpEvent = new KeyboardEvent('keyup', {
+                    key : 'ArrowDown',
+                    keyCode : 38,
+                    code : 'ArrowDown',
+                    bubbles : true
+                })
+
+                window.dispatchEvent(arrowUpEvent)
             })
         }
     }
@@ -581,7 +632,7 @@ window.addEventListener('load', function(){
             this.ammo = 20;
             this.maxAmmo = 50;
             this.ammoTimer = 0;
-            this.ammoInterval = 500;
+            this.ammoInterval = 375;
             this.gameOver = false;
             this.score = 0;
             this.winningScore = 1000;
