@@ -4,6 +4,7 @@ window.addEventListener('load', function(){
     //canvas setup
     const canvas = document.getElementById('canvas1');
     const ctx = canvas.getContext('2d');
+    // Canvas is fixed at 1700x700 for desktop; CSS max-width/max-height handles scaling on smaller screens
     canvas.width = 1700;
     canvas.height = 700;
     const up = document.getElementById("up");

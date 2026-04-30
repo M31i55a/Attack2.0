@@ -20,52 +20,104 @@ export class InputHandler{
         })
 
         //For mobile
+        const up = document.getElementById("up");
+        const down = document.getElementById("down");
+        const shoot = document.getElementById("shoot");
+
         up.addEventListener("mousedown", (e) => {
-            //Create and dispatch an ArrowUp keydown event
             const arrowUpEvent = new KeyboardEvent('keydown', {
                 key : 'ArrowUp',
                 keyCode : 38,
                 code : 'ArrowUp',
                 bubbles : true
             })
-
             window.dispatchEvent(arrowUpEvent)
         })
 
         up.addEventListener("mouseup", (e) => {
-            //Create and dispatch an ArrowUp keydown event
             const arrowUpEvent = new KeyboardEvent('keyup', {
                 key : 'ArrowUp',
                 keyCode : 38,
                 code : 'ArrowUp',
                 bubbles : true
             })
+            window.dispatchEvent(arrowUpEvent)
+        })
 
+        up.addEventListener("touchstart", (e) => {
+            e.preventDefault();
+            const arrowUpEvent = new KeyboardEvent('keydown', {
+                key : 'ArrowUp',
+                keyCode : 38,
+                code : 'ArrowUp',
+                bubbles : true
+            })
+            window.dispatchEvent(arrowUpEvent)
+        })
+
+        up.addEventListener("touchend", (e) => {
+            e.preventDefault();
+            const arrowUpEvent = new KeyboardEvent('keyup', {
+                key : 'ArrowUp',
+                keyCode : 38,
+                code : 'ArrowUp',
+                bubbles : true
+            })
             window.dispatchEvent(arrowUpEvent)
         })
 
         down.addEventListener("mousedown", (e) => {
-            //Create and dispatch an ArrowUp keydown event
             const arrowDownEvent = new KeyboardEvent('keydown', {
                 key : 'ArrowDown',
-                keyCode : 38,
+                keyCode : 40,
                 code : 'ArrowDown',
                 bubbles : true
             })
-
             window.dispatchEvent(arrowDownEvent)
         })
 
         down.addEventListener("mouseup", (e) => {
-            //Create and dispatch an ArrowUp keydown event
-            const arrowUpEvent = new KeyboardEvent('keyup', {
+            const arrowDownEvent = new KeyboardEvent('keyup', {
                 key : 'ArrowDown',
-                keyCode : 38,
+                keyCode : 40,
                 code : 'ArrowDown',
                 bubbles : true
             })
+            window.dispatchEvent(arrowDownEvent)
+        })
 
-            window.dispatchEvent(arrowUpEvent)
+        down.addEventListener("touchstart", (e) => {
+            e.preventDefault();
+            const arrowDownEvent = new KeyboardEvent('keydown', {
+                key : 'ArrowDown',
+                keyCode : 40,
+                code : 'ArrowDown',
+                bubbles : true
+            })
+            window.dispatchEvent(arrowDownEvent)
+        })
+
+        down.addEventListener("touchend", (e) => {
+            e.preventDefault();
+            const arrowDownEvent = new KeyboardEvent('keyup', {
+                key : 'ArrowDown',
+                keyCode : 40,
+                code : 'ArrowDown',
+                bubbles : true
+            })
+            window.dispatchEvent(arrowDownEvent)
+        })
+
+        // mousedown handles desktop clicks; touchstart handles mobile taps.
+        // e.preventDefault() in touchstart suppresses the synthetic mousedown on mobile,
+        // so shootTop() is only called once per interaction.
+        shoot.addEventListener("mousedown", (e) => {
+            this.game.player.shootTop();
+        })
+
+        shoot.addEventListener("touchstart", (e) => {
+            e.preventDefault();
+            this.game.player.shootTop();
         })
     }
 }
