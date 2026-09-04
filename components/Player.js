@@ -29,7 +29,7 @@ export class Player{
         this.backUpLimit = 7000;
         this.backUpFrames = 8;
         this.backUpColumns = 4;
-        this.backUpFrameInterval = 60;
+        this.backUpFrameInterval = 150;
         this.backUpFadeDuration = this.backUpFrames * this.backUpFrameInterval;
         this.backUpFrameIndex = 0;
         this.backUpFrameX = 0;
