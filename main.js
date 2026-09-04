@@ -21,6 +21,33 @@ window.addEventListener('load', function(){
         game.update(deltaTime);
         requestAnimationFrame(animate);
     }
-    animate(0);
+
+    //the intro holds the game still until the player is ready
+    const playNow = document.getElementById('play_now');
+    let started = false;
+
+    function startGame(){
+        if(started) return;
+        started = true;
+        document.body.classList.add('playing');
+        //start the clock now, so the time spent on the intro is not charged as one huge deltaTime
+        lastTime = performance.now();
+        requestAnimationFrame(animate);
+    }
+
+    playNow.addEventListener('click', startGame);
+
+    //Enter or Space starts the game instead of reaching the in-game controls
+    window.addEventListener('keydown', function(e){
+        if(started) return;
+        if(e.key === 'Enter' || e.key === ' '){
+            e.preventDefault();
+            e.stopPropagation();
+            startGame();
+        }
+    }, true);
+
+    //compose the first frame up front so nothing flashes when the intro fades out
+    game.draw(ctx);
 
 })

@@ -9,11 +9,11 @@
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
-      href="https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,300;1,600;1,700;1,800&display=swap"
+      href="https://fonts.googleapis.com/css2?family=Open+Sans:ital,wght@0,300;0,600;0,700;0,800;1,600;1,700;1,800&display=swap"
       rel="stylesheet"
     />
 
-    <title>Document</title>
+    <title>Attack 2.0 &mdash; Underwater Battle</title>
   </head>
   <body>
     <canvas id="canvas1"></canvas>
@@ -54,6 +54,29 @@
         </div>
       </div>
       <div id="shoot">FIRE</div>
+    </div>
+
+    <!--intro screen-->
+    <div id="intro_screen">
+      <div id="bubbles" aria-hidden="true">
+        <span></span><span></span><span></span><span></span>
+        <span></span><span></span><span></span><span></span>
+      </div>
+      <div id="intro_panel">
+        <p id="intro_kicker">Deep Sea Combat</p>
+        <h1 id="intro_title">Attack <span>2.0</span></h1>
+        <p id="intro_tagline">
+          Hunt the swarm, ride the power-ups and summon your dragon.<br />
+          Score 1000 before the 100 seconds run dry.
+        </p>
+        <div id="intro_ship" aria-hidden="true"></div>
+        <button id="play_now" type="button">Play Now</button>
+        <ul id="intro_controls">
+          <li><span class="key">&uarr;</span><span class="key">&darr;</span> Move</li>
+          <li><span class="key">Space</span> Shoot</li>
+          <li><span class="key">D</span> Debug</li>
+        </ul>
+      </div>
     </div>
 
     <script type="module" src="main.js"></script>

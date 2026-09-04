@@ -125,3 +125,231 @@ body{
         display: none;
     }
 }
+
+/* ============ intro screen ============ */
+
+/* the game is hidden behind the intro until "Play Now" is pressed */
+body:not(.playing) #control_block{
+    display: none;
+}
+
+#intro_screen{
+    position: fixed;
+    inset: 0;
+    z-index: 10;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 1.5rem;
+    overflow: hidden;
+    font-family: 'Open Sans', sans-serif;
+    color: #fff;
+    background:
+        radial-gradient(ellipse at 50% -15%, rgba(130, 190, 255, .38), transparent 62%),
+        linear-gradient(180deg, #36527e 0%, #1d3050 46%, #0b1526 100%);
+    box-shadow: inset 0 0 14rem rgba(0, 0, 0, .75);
+    transition: opacity .45s ease, visibility .45s ease;
+}
+
+body.playing #intro_screen{
+    opacity: 0;
+    visibility: hidden;
+    pointer-events: none;
+}
+
+/* the game's own far background art, reused as texture */
+#intro_screen::before{
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: url('assets/layer1.png') center bottom / cover no-repeat;
+    opacity: .3;
+    pointer-events: none;
+}
+
+/* drifting light shafts */
+#intro_screen::after{
+    content: '';
+    position: absolute;
+    inset: -20% -12% 0;
+    background: repeating-linear-gradient(105deg,
+        rgba(190, 225, 255, .07) 0 2rem,
+        transparent 2rem 6rem);
+    pointer-events: none;
+    animation: shafts 14s ease-in-out infinite alternate;
+}
+
+#intro_panel{
+    position: relative;
+    z-index: 1;
+    max-width: 34rem;
+    text-align: center;
+    animation: intro_rise .8s ease-out both;
+}
+
+#intro_kicker{
+    font-size: .75rem;
+    font-weight: 600;
+    letter-spacing: .45em;
+    text-indent: .45em;
+    text-transform: uppercase;
+    color: rgba(255, 200, 100, .9);
+    margin-bottom: .6rem;
+}
+
+#intro_title{
+    font-size: clamp(2.75rem, 11vw, 5.5rem);
+    font-weight: 800;
+    font-style: italic;
+    line-height: .95;
+    letter-spacing: .03em;
+    text-transform: uppercase;
+    text-shadow: 0 3px 0 rgba(0, 0, 0, .55), 0 0 35px rgba(120, 180, 255, .45);
+}
+
+#intro_title span{
+    color: #ffb545;
+    text-shadow: 0 3px 0 rgba(0, 0, 0, .55), 0 0 30px rgba(255, 140, 20, .75);
+}
+
+#intro_tagline{
+    margin-top: .9rem;
+    font-size: .95rem;
+    font-weight: 300;
+    line-height: 1.65;
+    color: rgba(255, 255, 255, .8);
+}
+
+/* frame 0 of the player sprite sheet (4680x380, 120x190 per frame) at 1.2x */
+#intro_ship{
+    width: 144px;
+    height: 228px;
+    margin: .75rem auto .25rem;
+    background: url('assets/player.png') 0 0 / 5616px 456px no-repeat;
+    filter: drop-shadow(0 12px 18px rgba(0, 0, 0, .55));
+    animation: intro_float 3.2s ease-in-out infinite;
+}
+
+#play_now{
+    font-family: inherit;
+    font-size: 1.05rem;
+    font-weight: 700;
+    font-style: italic;
+    letter-spacing: .12em;
+    text-transform: uppercase;
+    color: #fff;
+    padding: .95rem 2.75rem;
+    border: 2px solid rgba(255, 200, 100, .8);
+    border-radius: 999px;
+    background-color: rgba(220, 60, 20, .85);
+    cursor: pointer;
+    animation: intro_pulse 2.4s ease-in-out infinite;
+    transition: background-color .2s, transform .1s;
+}
+
+#play_now:hover{
+    background-color: rgba(255, 80, 20, .95);
+    animation: none;
+    box-shadow: 0 12px 38px rgba(255, 120, 20, .5);
+}
+
+#play_now:active{
+    background-color: rgba(255, 160, 0, .95);
+    transform: scale(.95);
+}
+
+#play_now:focus-visible{
+    outline: 3px solid #ffffbd;
+    outline-offset: 4px;
+}
+
+#intro_controls{
+    list-style: none;
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: .5rem 1.5rem;
+    margin-top: 1.75rem;
+    font-size: .8rem;
+    font-weight: 300;
+    color: rgba(255, 255, 255, .75);
+}
+
+#intro_controls li{
+    display: flex;
+    align-items: center;
+    gap: .4rem;
+}
+
+.key{
+    display: inline-flex;
+    justify-content: center;
+    align-items: center;
+    min-width: 1.75rem;
+    padding: .15rem .45rem;
+    border: 1px solid rgba(255, 255, 255, .35);
+    border-radius: .35rem;
+    background: rgba(0, 0, 0, .35);
+    font-size: .75rem;
+}
+
+#bubbles{
+    position: absolute;
+    inset: 0;
+    overflow: hidden;
+    pointer-events: none;
+}
+
+#bubbles span{
+    position: absolute;
+    bottom: -6rem;
+    border-radius: 50%;
+    border: 1px solid rgba(255, 255, 255, .18);
+    background: radial-gradient(circle at 30% 30%, rgba(255, 255, 255, .55), rgba(255, 255, 255, .06) 60%, transparent 70%);
+    animation: bubble_rise linear infinite;
+}
+
+#bubbles span:nth-child(1){ left:  8%; width: 10px; height: 10px; animation-duration:  9s; animation-delay: 0s; }
+#bubbles span:nth-child(2){ left: 18%; width:  6px; height:  6px; animation-duration: 11s; animation-delay: 2s; }
+#bubbles span:nth-child(3){ left: 31%; width: 14px; height: 14px; animation-duration:  8s; animation-delay: 4s; }
+#bubbles span:nth-child(4){ left: 44%; width:  8px; height:  8px; animation-duration: 12s; animation-delay: 1s; }
+#bubbles span:nth-child(5){ left: 58%; width: 11px; height: 11px; animation-duration: 10s; animation-delay: 5s; }
+#bubbles span:nth-child(6){ left: 70%; width:  7px; height:  7px; animation-duration: 13s; animation-delay: 3s; }
+#bubbles span:nth-child(7){ left: 82%; width: 13px; height: 13px; animation-duration:  9s; animation-delay: 6s; }
+#bubbles span:nth-child(8){ left: 92%; width:  9px; height:  9px; animation-duration: 11s; animation-delay: 1.5s; }
+
+@keyframes intro_rise{
+    from{ opacity: 0; transform: translateY(18px); }
+    to  { opacity: 1; transform: none; }
+}
+
+@keyframes intro_float{
+    0%, 100%{ transform: translateY(0); }
+    50%     { transform: translateY(-12px); }
+}
+
+@keyframes intro_pulse{
+    0%, 100%{ box-shadow: 0 10px 30px rgba(255, 90, 20, .35); }
+    50%     { box-shadow: 0 10px 42px rgba(255, 140, 20, .6); }
+}
+
+@keyframes bubble_rise{
+    0%  { transform: translateY(0) scale(.6); opacity: 0; }
+    15% { opacity: .8; }
+    100%{ transform: translateY(-115vh) scale(1); opacity: 0; }
+}
+
+@keyframes shafts{
+    from{ transform: translateX(-3%); }
+    to  { transform: translateX(3%); }
+}
+
+@media (prefers-reduced-motion: reduce){
+    #intro_screen::after,
+    #intro_panel,
+    #intro_ship,
+    #play_now,
+    #bubbles span{
+        animation: none;
+    }
+}
