@@ -71,7 +71,7 @@ export default class Game{
                     enemy.markedForDeletion = true;
                     if(this.player.backUpCounter == 5){
                         this.player.backUpCounter = 0;
-                        this.player.backUp = true;
+                        this.player.callBackUp();
                     }
                     if(!this.player.backUp) this.player.lives -= enemy.lives;
                     if(this.player.backUp) this.player.touched = false;

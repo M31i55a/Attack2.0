@@ -27,9 +27,14 @@ export class Player{
         this.touchedLimit = 2000;
         this.backUpTimer = 0;
         this.backUpLimit = 7000;
+        this.backUpFrames = 8;
+        this.backUpColumns = 4;
+        this.backUpFrameInterval = 60;
+        this.backUpFadeDuration = this.backUpFrames * this.backUpFrameInterval;
+        this.backUpFrameIndex = 0;
         this.backUpFrameX = 0;
         this.backUpFrameY = 0;
-        this.backUpMaxFrame = 4;
+        this.setBackUpFrame(this.backUpFrames - 1);
         this.powerUpTimer = 0;
         this.powerUpLimit = 10000;
     }
@@ -69,28 +74,28 @@ export class Player{
                 this.game.ammo += 0.1;
             }
         }
-        //backup
+        //backup: fades in from the last frame to the first, holds, then fades back out
         if(this.backUp){
+            this.backUpTimer += deltaTime;
+            const fadeOutStart = this.backUpLimit - this.backUpFadeDuration;
             if(this.backUpTimer > this.backUpLimit){
-
-                if(this.backUpFrameY < 2){
-                    if(this.backUpFrameX < this.backUpMaxFrame){
-                        this.backUpFrameX++;
-                    }
-                    else{
-                        this.backUpFrameX = 0;
-                        this.backUpFrameY++;
-                    }
-                }
-                if(this.backUpFrameY == 2){
-                    this.backUpFrameY = 0;
-                }
-
                 this.backUpTimer = 0;
                 this.backUp = false;
+                this.setBackUpFrame(this.backUpFrames - 1);
             }
             else{
-                this.backUpTimer += deltaTime;
+                if(this.backUpTimer < this.backUpFadeDuration){
+                    //appearance: 8th frame down to the 1st
+                    this.setBackUpFrame(this.backUpFrames - 1 - Math.floor(this.backUpTimer / this.backUpFrameInterval));
+                }
+                else if(this.backUpTimer < fadeOutStart){
+                    //shield fully formed
+                    this.setBackUpFrame(0);
+                }
+                else{
+                    //disappearance: 1st frame back up to the 8th
+                    this.setBackUpFrame(Math.floor((this.backUpTimer - fadeOutStart) / this.backUpFrameInterval));
+                }
                 this.touched = false;
             }
         }
@@ -116,7 +121,7 @@ export class Player{
         if(this.game.debug) context.strokeRect(this.x, this.y, this.width, this.height);
         context.drawImage(this.image,this.frameX * this.width, this.frameY * this.height, this.width, this.height,  this.x, this.y, this.width-25, this.height-25);
         if(this.backUp){
-            context.drawImage(this.backUpImg, 0 * this.backUpWidth, 0 * this.backUpHeight, this.backUpWidth, this.backUpHeight,  this.x - 120, this.y - 100, this.width*3 - 50, this.height*2 -50)
+            context.drawImage(this.backUpImg, this.backUpFrameX * this.backUpWidth, this.backUpFrameY * this.backUpHeight, this.backUpWidth, this.backUpHeight,  this.x - 120, this.y - 100, this.width*3 - 50, this.height*2 -50)
         }
     }
     shootTop(){
@@ -137,9 +142,17 @@ export class Player{
         this.powerUp = true;
         if(this.game.ammo < this.game.maxAmmo) this.game.ammo = this.game.maxAmmo;
     }
+    setBackUpFrame(index){
+        if(index < 0) index = 0;
+        else if(index > this.backUpFrames - 1) index = this.backUpFrames - 1;
+        this.backUpFrameIndex = index;
+        this.backUpFrameX = index % this.backUpColumns;
+        this.backUpFrameY = Math.floor(index / this.backUpColumns);
+    }
     callBackUp(){
         this.backUpTimer = 0;
         this.backUp = true;
         this.touched = false;
+        this.setBackUpFrame(this.backUpFrames - 1);
     }
 }
