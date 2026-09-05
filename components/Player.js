@@ -37,6 +37,8 @@ export class Player{
         this.setBackUpFrame(this.backUpFrames - 1);
         this.powerUpTimer = 0;
         this.powerUpLimit = 10000;
+        //second lucky in a row, taken while still powered up and unhurt: charged shots
+        this.superPowerUp = false;
     }
 
     update(deltaTime){
@@ -66,6 +68,7 @@ export class Player{
             if(this.powerUpTimer > this.powerUpLimit){
                 this.powerUpTimer = 0;
                 this.powerUp = false;
+                this.superPowerUp = false;
                 this.frameY = 0;
             }
             else{
@@ -110,6 +113,7 @@ export class Player{
                 this.image = document.getElementById('playerTouched');
                 this.touchedTimer += deltaTime;
                 this.frameY = 0;
+                this.superPowerUp = false;
             }
         }
     }
@@ -127,17 +131,19 @@ export class Player{
     shootTop(){
         //checkout if the player still has bullets and reduce the amount if he uses it
         if(this.game.ammo > 0){
-            this.projectiles.push(new Projectile(this.game, this.x +80, this.y +35));
+            this.projectiles.push(new Projectile(this.game, this.x +80, this.y +35, this.superPowerUp));
             this.game.ammo--;
         }
         if(this.powerUp) this.shootBottom();
     }
     shootBottom(){
         if(this.game.ammo > 0){
-            this.projectiles.push(new Projectile(this.game, this.x +80, this.y +175));
+            this.projectiles.push(new Projectile(this.game, this.x +80, this.y +175, this.superPowerUp));
         }
     }
     enterPowerUp(){
+        //already firing from mouth and tail, and untouched since: this lucky charges the guns
+        if(this.powerUp && !this.touched) this.superPowerUp = true;
         this.powerUpTimer = 0;
         this.powerUp = true;
         if(this.game.ammo < this.game.maxAmmo) this.game.ammo = this.game.maxAmmo;

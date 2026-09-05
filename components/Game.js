@@ -119,7 +119,7 @@ export default class Game{
             this.player.projectiles.forEach(projectile => {
                 //reduce enemy life is he collides with the player's projectile
                 if(this.checkCollision(projectile, enemy)){
-                    enemy.lives--;
+                    enemy.lives -= projectile.damage;
                     projectile.markedForDeletion = true; 
                     if(enemy.lives <= 0){
                         for(let i = 0; i < enemy.score; i++){
