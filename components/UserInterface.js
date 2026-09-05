@@ -1,8 +1,8 @@
 export class UI{
     constructor(game){
         this.game = game;
-        this.fontSize = 21;
-        this.fontFamily = 'bangers';
+        this.fontSize = 24;
+        this.fontFamily = "'Bangers', 'Impact', sans-serif";
         this.color = 'white';
         
     }
@@ -58,11 +58,11 @@ export class UI{
             }
             else{
                 message1 = 'You lose!';
-                message2 = 'Try agin next time!';
+                message2 = 'Try again next time!';
             }
-            context.font = '70px ' + this.fontFamily;
+            context.font = '80px ' + this.fontFamily;
             context.fillText(message1, this.game.width * 0.5, this.game.height * 0.5 - 20);
-            context.font = '25px ' + this.fontFamily;
+            context.font = '30px ' + this.fontFamily;
             context.fillText(message2, this.game.width * 0.5, this.game.height * 0.5 + 20);
             // game.enemies.noLoop()
         }

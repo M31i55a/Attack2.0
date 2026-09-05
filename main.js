@@ -47,7 +47,21 @@ window.addEventListener('load', function(){
         }
     }, true);
 
+    //the HUD is drawn on the canvas, so the webfont has to be ready before the first frame
+    //otherwise those frames render in the fallback face and pop when Bangers arrives
+    function redraw(){
+        if(started) return;
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+        game.draw(ctx);
+    }
+
     //compose the first frame up front so nothing flashes when the intro fades out
-    game.draw(ctx);
+    redraw();
+    if(document.fonts && document.fonts.load){
+        Promise.all([
+            document.fonts.load("24px 'Bangers'"),
+            document.fonts.load("80px 'Bangers'")
+        ]).then(redraw).catch(function(){});
+    }
 
 })

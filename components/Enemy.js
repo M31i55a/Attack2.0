@@ -27,7 +27,7 @@ export default class Enemy{
         if(this.game.debug) context.strokeRect(this.x, this.y, this.width, this.height);
         context.drawImage(this.image, this.frameX * this.width, this.frameY * this.height, this.width, this.height, this.x, this.y, this.width-20, this.height-20);
         if(this.game.debug){
-            context.font = '20px Bangers';
+            context.font = "20px 'Bangers', sans-serif";
             context.fillStyle = 'white'
             context.fillText(this.lives, this.x, this.y);
         }

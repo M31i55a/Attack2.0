@@ -1,3 +1,10 @@
+:root{
+    /* comic/arcade display face - also used for the in-canvas HUD */
+    --font-display: 'Bangers', 'Impact', 'Arial Black', sans-serif;
+    /* rounded companion for anything that has to stay readable at small sizes */
+    --font-body: 'Nunito', 'Segoe UI', sans-serif;
+}
+
 *{
     margin: 0;
     padding: 0;
@@ -6,10 +13,11 @@
 
 body{
     background: #000;
+    font-family: var(--font-body);
 }
 
 #canvas1{
-    font-family: 'Open Sans', sans-serif;
+    font-family: var(--font-display);
     border: 3px solid black;
     position: absolute;
     top: 50%;
@@ -90,8 +98,9 @@ body{
     background-color: rgba(220, 60, 20, 0.85);
     border: 2px solid rgba(255, 200, 100, 0.8);
     color: white;
-    font-size: 0.85rem;
-    font-weight: bold;
+    font-family: var(--font-display);
+    font-size: 1.35rem;
+    letter-spacing: .08em;
     display: flex;
     justify-content: center;
     align-items: center;
@@ -114,6 +123,7 @@ body{
 
 .arrow_symbol{
     color: white;
+    font-family: var(--font-display);
     font-size: 2rem;
     display: flex;
     justify-content: center;
@@ -142,7 +152,7 @@ body:not(.playing) #control_block{
     align-items: center;
     padding: 1.5rem;
     overflow: hidden;
-    font-family: 'Open Sans', sans-serif;
+    font-family: var(--font-body);
     color: #fff;
     background:
         radial-gradient(ellipse at 50% -15%, rgba(130, 190, 255, .38), transparent 62%),
@@ -188,8 +198,8 @@ body.playing #intro_screen{
 }
 
 #intro_kicker{
-    font-size: .75rem;
-    font-weight: 600;
+    font-family: var(--font-display);
+    font-size: 1rem;
     letter-spacing: .45em;
     text-indent: .45em;
     text-transform: uppercase;
@@ -198,18 +208,25 @@ body.playing #intro_screen{
 }
 
 #intro_title{
-    font-size: clamp(2.75rem, 11vw, 5.5rem);
-    font-weight: 800;
-    font-style: italic;
+    font-family: var(--font-display);
+    font-size: clamp(3.25rem, 13vw, 6.5rem);
+    font-weight: 400;
     line-height: .95;
-    letter-spacing: .03em;
+    letter-spacing: .05em;
     text-transform: uppercase;
-    text-shadow: 0 3px 0 rgba(0, 0, 0, .55), 0 0 35px rgba(120, 180, 255, .45);
+    /* stacked outline + glow: the chunky comic lettering needs the extra depth */
+    text-shadow:
+        3px 3px 0 rgba(0, 0, 0, .65),
+        0 0 12px rgba(120, 180, 255, .55),
+        0 0 38px rgba(120, 180, 255, .45);
 }
 
 #intro_title span{
     color: #ffb545;
-    text-shadow: 0 3px 0 rgba(0, 0, 0, .55), 0 0 30px rgba(255, 140, 20, .75);
+    text-shadow:
+        3px 3px 0 rgba(0, 0, 0, .65),
+        0 0 12px rgba(255, 140, 20, .6),
+        0 0 34px rgba(255, 140, 20, .75);
 }
 
 #intro_tagline{
@@ -231,10 +248,8 @@ body.playing #intro_screen{
 }
 
 #play_now{
-    font-family: inherit;
-    font-size: 1.05rem;
-    font-weight: 700;
-    font-style: italic;
+    font-family: var(--font-display);
+    font-size: 1.6rem;
     letter-spacing: .12em;
     text-transform: uppercase;
     color: #fff;
@@ -290,7 +305,9 @@ body.playing #intro_screen{
     border: 1px solid rgba(255, 255, 255, .35);
     border-radius: .35rem;
     background: rgba(0, 0, 0, .35);
-    font-size: .75rem;
+    font-family: var(--font-display);
+    font-size: .95rem;
+    letter-spacing: .04em;
 }
 
 #bubbles{
