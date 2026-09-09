@@ -1,10 +1,14 @@
-import Projectile from './Projectile.js';
+import Projectile from './Projectile.js?v=2';
 
 export class Player{
     constructor(game){
         this.game = game;
         this.lives = 100;
         this.dragonTrigger = 0;
+        //luckies eaten in a row without taking a hit; a full streak fires the big bomb
+        this.bombTrigger = 0;
+        //lower this to test the weapon without hunting five luckies; the HUD follows it
+        this.bombTriggerLimit = 5;
         this.width = 120;
         this.height = 190; 
         this.x = 20;

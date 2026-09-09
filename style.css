@@ -29,9 +29,8 @@ body{
     max-height: 100dvh;
 }
 
-#layer1, #layer2, #layer3, #layer4, #layer5, #player,#backUpImg, #playerTouched, #angler1, #angler2, #lucky, #projectile, #gears, #hivewhale, #drone, #smokeExplosion, #fireExplosion, #dragonSprite{
-    display: none;
-}
+/* sprite sheets (body > img) are hidden by the <style> block in index.html,
+   so they stay hidden even when this file is served from cache */
 
 #control_block{
     position: fixed;

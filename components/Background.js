@@ -1,4 +1,4 @@
-import Layer  from './Layer.js';
+import Layer  from './Layer.js?v=2';
 
 export class Background{
     constructor(game){

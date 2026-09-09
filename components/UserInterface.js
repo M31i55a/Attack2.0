@@ -45,6 +45,12 @@ export class UI{
         dragon.src = "assets/dragon.png"
         context.drawImage(dragon, 120, 75, 37, 37);
         context.fillText(' : ' + this.game.player.dragonTrigger, 160, 100)
+
+        //big bomb streak: five luckies in a row without a hit and it fires
+        //the icon is the first frame of the explosion sheet, so no extra asset is needed
+        const bomb = document.getElementById('bigExplosion');
+        context.drawImage(bomb, 0, 0, 1748/5, 899/2, 230, 75, 37, 37);
+        context.fillText(' : ' + this.game.player.bombTrigger + '/' + this.game.player.bombTriggerLimit, 270, 100)
         
         //Game Over Messages
         if(this.game.gameOver){

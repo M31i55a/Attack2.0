@@ -12,6 +12,15 @@
     />
 
     <title>Attack 2.0 &mdash; Underwater Battle</title>
+
+    <!-- Every image in the body is a sprite sheet the canvas decodes from, never page content.
+         This rule lives in the document instead of style.css so the raw sheets can never paint
+         over the game, even if the stylesheet is cached, blocked or fails to load. -->
+    <style>
+      body > img{
+        display: none;
+      }
+    </style>
   </head>
   <body>
     <canvas id="canvas1"></canvas>
@@ -32,6 +41,7 @@
     <img src="assets/gears.png" id="gears" alt="" />
     <img src="assets/smokeExplosion.png" id="smokeExplosion" alt="" />
     <img src="assets/fireExplosion.png" id="fireExplosion" alt="" />
+    <img src="assets/Big_explosion.png" id="bigExplosion" alt="" />
     <img src="assets/backUpImg.png" id="backUpImg" />
 
     <!--environment-->
@@ -77,6 +87,8 @@
       </div>
     </div>
 
-    <script type="module" src="main.js"></script>
+    <!-- ?v=N busts the browser module cache. Bump this number whenever a .js change
+         does not show up after a reload; the same number is on the imports inside the modules. -->
+    <script type="module" src="main.js?v=2"></script>
   </body>
 </html>

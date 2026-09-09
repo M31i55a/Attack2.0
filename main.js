@@ -1,4 +1,4 @@
-import Game from './components/Game.js';
+import Game from './components/Game.js?v=2';
 
 window.addEventListener('load', function(){
     //canvas setup

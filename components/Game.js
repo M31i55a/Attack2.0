@@ -1,11 +1,12 @@
-import {Background} from './Background.js';
-import {Player} from './Player.js';
-import {InputHandler} from './InputHandler.js';
-import {UI} from './UserInterface.js';
-import {Dragon} from './Dragon.js';
-import {Particle} from './Particle.js';
-import {SmokeExplosion, FireExplosion} from './ExplosionTypes.js';
-import {Angler1, Angler2, HiveWhale, LuckyFish, Drone} from './EnemyTypes.js';
+import {Background} from './Background.js?v=2';
+import {Player} from './Player.js?v=2';
+import {InputHandler} from './InputHandler.js?v=2';
+import {UI} from './UserInterface.js?v=2';
+import {Dragon} from './Dragon.js?v=2';
+import {Particle} from './Particle.js?v=2';
+import {SmokeExplosion, FireExplosion, BigExplosion} from './ExplosionTypes.js?v=2';
+import {Angler1, Angler2, HiveWhale, LuckyFish, Drone} from './EnemyTypes.js?v=2';
+import BigBomb from './BigBomb.js?v=2';
 
 export default class Game{
     constructor(width, height){
@@ -20,6 +21,7 @@ export default class Game{
         this.enemies = [];
         this.particles = [];
         this.explosions = [];
+        this.bombs = [];
         this.enemyTimer = 0;
         this.enemyInterval = 1000;
         this.ammo = 20;
@@ -56,6 +58,9 @@ export default class Game{
         //appearance and disappearance of particles
         this.particles.forEach(particle => particle.update());
         this.particles = this.particles.filter(particle => !particle.markedForDeletion);
+        //the big bomb travels on its own until it reaches the middle of the screen
+        this.bombs.forEach(bomb => bomb.update());
+        this.bombs = this.bombs.filter(bomb => !bomb.markedForDeletion);
         //appearance and disappearance of explosions
         this.explosions.forEach(explosion => explosion.update(deltaTime));
         this.explosions = this.explosions.filter(explosion => !explosion.markedForDeletion);
@@ -82,6 +87,11 @@ export default class Game{
                     }
                     if(enemy.type === 'lucky'){
                         this.player.backUpCounter++;
+                        this.player.bombTrigger++;
+                        if(this.player.bombTrigger >= this.player.bombTriggerLimit){
+                            this.player.bombTrigger = 0;
+                            this.addBigBomb();
+                        }
                         this.player.enterPowerUp();
                         this.player.dragonTrigger++;
                         if(this.player.dragonTrigger == 3){
@@ -92,6 +102,8 @@ export default class Game{
                     }
                     else{
                         this.player.touched = true
+                        //the streak only survives while the player goes untouched
+                        if(!this.player.backUp) this.player.bombTrigger = 0;
                         this.score--;
                         this.player.dragonTrigger--;
                         if(this.player.dragonTrigger < 0) this.player.dragonTrigger = 0;
@@ -121,19 +133,7 @@ export default class Game{
                 if(this.checkCollision(projectile, enemy)){
                     enemy.lives -= projectile.damage;
                     projectile.markedForDeletion = true; 
-                    if(enemy.lives <= 0){
-                        for(let i = 0; i < enemy.score; i++){
-                            this.particles.push(new Particle(this, enemy.x + enemy.width * 0.5, enemy.y + enemy.height * 0.5));
-                        }
-                        enemy.markedForDeletion = true; //delete if the life amount is less or equal to 0
-                        this.addExplosion(enemy)
-                        if(enemy.type === 'hive'){
-                            for(let i = 0; i < 5; i++){
-                                this.enemies.push(new Drone(this, enemy.x + Math.random() * enemy.width, enemy.y + Math.random() * enemy.height * 0.5))
-                            }
-                        }
-                        if(!this.gameOver) this.score += enemy.score;
-                    }
+                    if(enemy.lives <= 0) this.destroyEnemy(enemy);
                     
                 }
             })
@@ -152,6 +152,7 @@ export default class Game{
         this.background.draw(context);
         this.ui.draw(context);
         this.player.draw(context);
+        this.bombs.forEach(bomb => bomb.draw(context));
         this.particles.forEach(particle => particle.draw(context));
         this.dragons.forEach(dragon => dragon.draw(context))
         this.enemies.forEach(enemy => enemy.draw(context))
@@ -178,6 +179,29 @@ export default class Game{
         else{
             this.explosions.push(new FireExplosion(this, enemy.x + enemy.width * 0.5, enemy.y + enemy.height * 0.5))
         }
+    }
+
+    destroyEnemy(enemy){
+        for(let i = 0; i < enemy.score; i++){
+            this.particles.push(new Particle(this, enemy.x + enemy.width * 0.5, enemy.y + enemy.height * 0.5));
+        }
+        enemy.markedForDeletion = true; //delete if the life amount is less or equal to 0
+        this.addExplosion(enemy)
+        if(enemy.type === 'hive'){
+            for(let i = 0; i < 5; i++){
+                this.enemies.push(new Drone(this, enemy.x + Math.random() * enemy.width, enemy.y + Math.random() * enemy.height * 0.5))
+            }
+        }
+        if(!this.gameOver) this.score += enemy.score;
+    }
+
+    addBigBomb(){
+        //out of the middle of the player, one shot only
+        this.bombs.push(new BigBomb(this, this.player.x + 80, this.player.y + this.player.height * 0.5))
+    }
+
+    addBigExplosion(){
+        this.explosions.push(new BigExplosion(this, this.width * 0.5, this.height * 0.5))
     }
 
     addDragon(){
