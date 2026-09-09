@@ -1,4 +1,4 @@
-import Enemy from './Enemy.js?v=2';
+import Enemy from './Enemy.js?v=3';
 
 export class Angler1 extends Enemy{
     constructor(game){

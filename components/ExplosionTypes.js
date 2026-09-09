@@ -1,4 +1,4 @@
-import Explosion from './Explosion.js?v=2'
+import Explosion from './Explosion.js?v=3'
 
 export class SmokeExplosion extends Explosion{
     constructor(game, x, y){
@@ -15,7 +15,7 @@ export class FireExplosion extends Explosion{
 }
 
 export class BigExplosion extends Explosion{
-    //ten frames on two rows of five, played over 2.5s. The shockwave travels from the centre
+    //ten frames on two rows of five, played over 1.8s. The shockwave travels from the centre
     //out to a quarter of the screen and takes 100 lives off whatever it catches on the way
     constructor(game, x, y){
         super(game, x, y)
@@ -25,14 +25,16 @@ export class BigExplosion extends Explosion{
         this.columns = 5;
         this.maxFrame = 9;
         this.frameIndex = 0;
+        //how far the damage reaches: a quarter of the screen
         this.radius = this.game.width * 0.25;
-        this.width = this.radius * 2;
-        this.height = this.radius * 2;
+        //the drawn fireball is half that box, so the animation reads tighter than its reach
+        this.width = this.radius;
+        this.height = this.radius;
         this.x = x - this.width * 0.5;
         this.y = y - this.height * 0.5;
         this.centerX = x;
         this.centerY = y;
-        this.duration = 2500;
+        this.duration = 1800;
         this.interval = this.duration / (this.maxFrame + 1);
         this.elapsed = 0;
         this.blastRadius = 0;

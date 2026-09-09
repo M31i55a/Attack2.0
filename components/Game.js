@@ -1,12 +1,12 @@
-import {Background} from './Background.js?v=2';
-import {Player} from './Player.js?v=2';
-import {InputHandler} from './InputHandler.js?v=2';
-import {UI} from './UserInterface.js?v=2';
-import {Dragon} from './Dragon.js?v=2';
-import {Particle} from './Particle.js?v=2';
-import {SmokeExplosion, FireExplosion, BigExplosion} from './ExplosionTypes.js?v=2';
-import {Angler1, Angler2, HiveWhale, LuckyFish, Drone} from './EnemyTypes.js?v=2';
-import BigBomb from './BigBomb.js?v=2';
+import {Background} from './Background.js?v=3';
+import {Player} from './Player.js?v=3';
+import {InputHandler} from './InputHandler.js?v=3';
+import {UI} from './UserInterface.js?v=3';
+import {Dragon} from './Dragon.js?v=3';
+import {Particle} from './Particle.js?v=3';
+import {SmokeExplosion, FireExplosion, BigExplosion} from './ExplosionTypes.js?v=3';
+import {Angler1, Angler2, HiveWhale, LuckyFish, Drone} from './EnemyTypes.js?v=3';
+import BigBomb from './BigBomb.js?v=3';
 
 export default class Game{
     constructor(width, height){
